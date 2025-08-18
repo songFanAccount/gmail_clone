@@ -9,7 +9,7 @@ import { SessionProvider } from "next-auth/react";
 export const metadata: Metadata = {
   title: "Lyra Gmail",
   description: "Lyra Academy - Gmail",
-  icons: [{ rel: "icon", url: "/favicon.ico" }],
+  icons: [{ rel: "icon", url: "/gmail.png", sizes: "16x16" }],
 };
 
 const geist = Geist({
