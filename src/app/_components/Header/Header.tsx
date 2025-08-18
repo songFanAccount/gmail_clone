@@ -2,8 +2,10 @@ import Image from "next/image";
 import { IoIosMenu as MenuIcon } from "react-icons/io";
 import ProfileButton from "./ProfileButton";
 import SearchBar from "./SearchBar";
+import { signIn, useSession } from "next-auth/react";
 
 const Header = () => {
+  const { data: session } = useSession()
   return (
     <div className="w-full h-16 p-2 flex flex-row items-center">
       <div className="w-[238px] flex flex-row gap-[6px] items-center">
@@ -36,8 +38,23 @@ const Header = () => {
       ">
         <SearchBar/>
       </div>
-      <div className="pr-1 w-[238px] flex flex-row justify-end ml-auto">
-        <ProfileButton/>
+      <div className="mr-1 w-[238px] flex flex-row justify-end ml-auto">
+        {
+          session?.user
+          ?
+            <ProfileButton/>
+          :
+            <button className="
+              border-[1px] rounded-[10px] px-2 py-1 text-gray-700
+              cursor-pointer hover:bg-black hover:text-white
+            "
+              onClick={() => signIn("google")}
+            >
+              <span>
+                Login
+              </span>
+            </button>
+        }
       </div>
     </div>
   )
