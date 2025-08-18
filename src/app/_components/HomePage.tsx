@@ -1,8 +1,9 @@
 "use client";
 
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 
 const HomePage = () => {
+  const user = useSession()
   return (
     <div className="w-screen h-screen">
       <button className="p-2 cursor-pointer bg-gray-600"
@@ -10,6 +11,9 @@ const HomePage = () => {
       >
         <span>Log in</span>
       </button>
+      {
+        user.data?.user.name
+      }
     </div>
   )
 }
