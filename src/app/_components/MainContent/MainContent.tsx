@@ -1,4 +1,6 @@
 import ActionsHeader from "./ActionsHeader"
+import Emails from "./Emails"
+import Tabs from "./Tabs"
 
 const MainContent = () => {
   return (
@@ -7,6 +9,10 @@ const MainContent = () => {
       flex flex-col
     ">
       <ActionsHeader/>
+      <div className="pr-2">
+        <Tabs/>
+      </div>
+      <Emails/>
     </div>
   )
 }
