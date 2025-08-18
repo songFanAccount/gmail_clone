@@ -8,7 +8,7 @@ const Header = () => {
   const { data: session } = useSession()
   return (
     <div className="w-full h-16 p-2 flex flex-row items-center">
-      <div className="w-[238px] flex flex-row gap-[6px] items-center">
+      <div className="w-[248px] pl-1 flex flex-row gap-[6px] items-center">
         <button className="
           rounded-full w-12 h-12 flex items-center justify-center 
           text-gray-700 cursor-pointer hover:bg-gray-200

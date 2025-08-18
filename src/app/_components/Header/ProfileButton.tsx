@@ -9,7 +9,7 @@ const ProfileButton = () => {
     <Popover.Root>
       <Popover.Trigger asChild>
         <button className="
-          flex flex-row items-center justify-center
+          flex flex-row items-center justify-center pt-[1px]
           w-8 h-8 bg-[#004d40] rounded-full cursor-pointer
         ">
           <span className="text-white">
