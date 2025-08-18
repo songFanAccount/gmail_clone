@@ -16,7 +16,7 @@ const ActionsHeader = () => {
         <RefreshIcon className="w-5 h-5 ml-5 cursor-pointer"/>
         <MoreIcon className="w-5 h-5 ml-5 cursor-pointer"/>
       </div>
-      <div className="flex flex-row items-center gap-4 mr-6">
+      <div className="flex flex-row items-center gap-4 mr-5">
         <span className="text-[12px] tracking-wide">1-50 of 3,120</span>
         <LeftArrowIcon className="w-5 h-5 cursor-pointer"
           style={{
