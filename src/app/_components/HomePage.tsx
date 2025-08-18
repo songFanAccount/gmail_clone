@@ -1,6 +1,7 @@
 "use client";
 
 import Header from "./Header/Header";
+import MainContent from "./MainContent/MainContent";
 import SideBar from "./Sidebar/SideBar";
 
 const HomePage = () => {
@@ -9,6 +10,7 @@ const HomePage = () => {
       <Header/>
       <div className="h-full w-full flex flex-row">
         <SideBar/>
+        <MainContent/>
       </div>
     </div>
   )

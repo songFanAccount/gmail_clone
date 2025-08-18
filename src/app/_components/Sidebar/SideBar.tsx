@@ -36,7 +36,7 @@ const SideBar = () => {
   ]
   return (
     <div className="
-      w-[248px] flex flex-col
+      w-[256px] flex flex-col
     ">
       <ComposeButton/>
       <div className="
