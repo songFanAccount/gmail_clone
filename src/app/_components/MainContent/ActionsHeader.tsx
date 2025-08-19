@@ -5,6 +5,11 @@ import { MdOutlineKeyboardArrowLeft as LeftArrowIcon, MdOutlineKeyboardArrowRigh
 const ActionsHeader = () => {
   const canGoBackPage = false
   const canGoForwardPage = true
+  async function syncEmails() {
+    const res = await fetch("/api/gmail/sync")
+    const data = await res.json() as JSON
+    console.log(data)
+  }
   return (
     <div className="
       h-12 w-full flex flex-row items-center justify-between
@@ -13,7 +18,11 @@ const ActionsHeader = () => {
       <div className="flex flex-row items-center">
         <CheckboxIcon className="w-5 h-5 cursor-pointer"/>
         <DropdownIcon className="w-6 h-6 cursor-pointer"/>
-        <RefreshIcon className="w-5 h-5 ml-5 cursor-pointer"/>
+        <button className="cursor-pointer ml-5"
+          onClick={syncEmails}
+        >
+          <RefreshIcon className="w-5 h-5"/>
+        </button>
         <MoreIcon className="w-5 h-5 ml-5 cursor-pointer"/>
       </div>
       <div className="flex flex-row items-center gap-4 mr-5">
