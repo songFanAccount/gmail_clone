@@ -2,8 +2,11 @@ import { RiPencilLine as ComposeIcon, RiSendPlane2Line as SentIcon } from "react
 import { CgInbox as InboxIcon } from "react-icons/cg";
 import { IoMdStarOutline as StarredIcon } from "react-icons/io";
 import { FiClock as SnoozedIcon } from "react-icons/fi";
-import { FaRegFile as DraftIcon } from "react-icons/fa";
-import { MdKeyboardArrowDown as DropdownIcon } from "react-icons/md";
+import { FaRegFile as DraftIcon, FaRegTrashAlt as TrashIcon } from "react-icons/fa";
+import { MdKeyboardArrowDown as DropdownIcon, MdKeyboardArrowUp as CollapseIcon, MdLabelImportantOutline as ImportantIcon, MdOutlineScheduleSend as ScheduledIcon } from "react-icons/md";
+import { LuMails as MailsIcon } from "react-icons/lu";
+import { PiWarningOctagonFill as SpamIcon } from "react-icons/pi";
+import { useEffect, useState } from "react";
 
 const ComposeButton = () => {
   return (
@@ -24,27 +27,59 @@ interface EmailCategory {
   name: string,
   Icon: React.ElementType,
   size?: number | string,
-  numEmails?: number
 }
 const SideBar = () => {
+  const [showMore, setShowMore] = useState<boolean>(false)
+  const [selectedCategory, setSelectedCategory] = useState<string>("Inbox")
+  interface LabelInfo {
+    id: string;
+    name: string;
+    type: string;
+    messagesTotal?: number;
+    messagesUnread?: number;
+    threadsTotal?: number;
+    threadsUnread?: number;
+  }
+  const [labelsInfo, setLabelsInfo] = useState<Record<string, LabelInfo> | undefined>(undefined)
   const emailCategories: EmailCategory[] = [
-    {name: "Inbox", Icon: InboxIcon, numEmails: 42},
+    {name: "Inbox", Icon: InboxIcon},
     {name: "Starred", Icon: StarredIcon, size: "20px"},
     {name: "Snoozed", Icon: SnoozedIcon},
     {name: "Sent", Icon: SentIcon},
     {name: "Drafts", Icon: DraftIcon},
   ]
+  const moreEmailCategories: EmailCategory[] = [
+    {name: "Important", Icon: ImportantIcon, size: "18px"},
+    {name: "Scheduled", Icon: ScheduledIcon},
+    {name: "All Mail", Icon: MailsIcon},
+    {name: "Spam", Icon: SpamIcon},
+    {name: "Trash", Icon: TrashIcon, size: "14px"},
+  ]
+  async function syncEmailLabels() {
+    const res = await fetch("/api/gmail/labels")
+    const data = await res.json() as LabelInfo[]
+    const newLabelsInfo: Record<string, LabelInfo> = {}
+    data.forEach(labelInfo => {
+      newLabelsInfo[labelInfo.id] = labelInfo
+    })
+    setLabelsInfo(newLabelsInfo)
+  }
+  useEffect(() => {
+    void syncEmailLabels()
+  }, [])
   return (
     <div className="
-      w-[256px] flex flex-col
+      w-[256px] min-w-[256px] flex flex-col flex-shrink-0
     ">
       <ComposeButton/>
       <div className="
         flex flex-col w-[240px] text-gray-800
       ">
         {emailCategories.map((category, index) => {
-          const {name, Icon, size, numEmails} = category
-          const selected = index === 0
+          const {name, Icon, size} = category
+          const selected = name === selectedCategory
+          const numUnreadThreads = labelsInfo?.[name.toUpperCase()]?.threadsUnread
+          const hasUnread = numUnreadThreads !== undefined && numUnreadThreads > 0
           return (
             <button key={index} className="
               h-8 rounded-tr-[16px] rounded-br-[16px] 
@@ -56,6 +91,7 @@ const SideBar = () => {
                 '--hover-color': selected ? "#d3e3fd" : "#ebedf0",
                 color: selected ? "black" : undefined
               } as React.CSSProperties}
+              onClick={() => setSelectedCategory(name)}
             >
               <div className="w-[56px] flex justify-center items-center">
                 <Icon
@@ -73,9 +109,9 @@ const SideBar = () => {
                 {name}
               </span>
               {
-                numEmails !== undefined &&
+                hasUnread &&
                 <span className="text-[12px] font-[500] ml-auto mr-3">
-                  {numEmails.toLocaleString()}
+                  {numUnreadThreads.toLocaleString()}
                 </span>
               }
             </button>
@@ -86,15 +122,64 @@ const SideBar = () => {
           hover:bg-[#ebedf0] cursor-pointer
           flex flex-row items-center pl-2
         "
+          onClick={() => setShowMore(prev => !prev)}
         >
           <div className="w-[56px] flex justify-center items-center">
-            <DropdownIcon className="w-5 h-5"/>
+            {
+              showMore
+              ?
+                <CollapseIcon className="w-5 h-5"/>
+              :  
+                <DropdownIcon className="w-5 h-5"/>
+            }
           </div>
           <span className="text-[14px]"
           >
-            More
+            {`${showMore ? "Less" : "More"}`}
           </span>
         </button>
+        {showMore && moreEmailCategories.map((category, index) => {
+          const {name, Icon, size} = category
+          const selected = name === selectedCategory
+          const numUnreadThreads = labelsInfo?.[name.toUpperCase()]?.threadsUnread
+          const hasUnread = numUnreadThreads !== undefined && numUnreadThreads > 0
+          return (
+            <button key={index} className="
+              h-8 rounded-tr-[16px] rounded-br-[16px] 
+              hover:bg-[var(--hover-color)] cursor-pointer
+              flex flex-row items-center pl-2
+            "
+              style={{
+                backgroundColor: selected ? "#d3e3fd" : undefined,
+                '--hover-color': selected ? "#d3e3fd" : "#ebedf0",
+                color: selected ? "black" : undefined
+              } as React.CSSProperties}
+              onClick={() => setSelectedCategory(name)}
+            >
+              <div className="w-[56px] flex justify-center items-center">
+                <Icon
+                  style={{
+                    width: size ?? "16px" ,
+                    height: size ?? "16px"
+                  }}
+                />
+              </div>
+              <span className="text-[14px]"
+                style={{
+                  fontWeight: selected ? 500 : undefined
+                }}
+              >
+                {name}
+              </span>
+              {
+                hasUnread &&
+                <span className="text-[12px] font-[500] ml-auto mr-3">
+                  {numUnreadThreads.toLocaleString()}
+                </span>
+              }
+            </button>
+          )
+        })}
       </div>
     </div>
   )

@@ -5,6 +5,7 @@ const SearchBar = () => {
     <div className="
       h-12 flex flex-row items-center pr-6
       bg-[#e9eef6] rounded-[24px] text-gray-700
+      min-w-[240px]
     ">
       <div className="
         cursor-pointer hover:bg-gray-300 rounded-full ml-[6px] p-[6px] mr-1

@@ -38,7 +38,7 @@ const Header = () => {
       ">
         <SearchBar/>
       </div>
-      <div className="mr-1 w-[238px] flex flex-row justify-end ml-auto">
+      <div className="pl-3 mr-1 w-[238px] flex flex-row justify-end ml-auto">
         {
           session?.user
           ?
