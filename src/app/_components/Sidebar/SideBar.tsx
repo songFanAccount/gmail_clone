@@ -7,6 +7,7 @@ import { MdKeyboardArrowDown as DropdownIcon, MdKeyboardArrowUp as CollapseIcon,
 import { LuMails as MailsIcon } from "react-icons/lu";
 import { PiWarningOctagonFill as SpamIcon } from "react-icons/pi";
 import { useEffect, useState } from "react";
+import type { LabelInfo } from "../HomePage";
 
 const ComposeButton = () => {
   return (
@@ -28,19 +29,10 @@ interface EmailCategory {
   Icon: React.ElementType,
   size?: number | string,
 }
-const SideBar = () => {
+const SideBar = ({ labelsInfo } : { labelsInfo: Record<string, LabelInfo>}) => {
   const [showMore, setShowMore] = useState<boolean>(false)
   const [selectedCategory, setSelectedCategory] = useState<string>("Inbox")
-  interface LabelInfo {
-    id: string;
-    name: string;
-    type: string;
-    messagesTotal?: number;
-    messagesUnread?: number;
-    threadsTotal?: number;
-    threadsUnread?: number;
-  }
-  const [labelsInfo, setLabelsInfo] = useState<Record<string, LabelInfo> | undefined>(undefined)
+  
   const emailCategories: EmailCategory[] = [
     {name: "Inbox", Icon: InboxIcon},
     {name: "Starred", Icon: StarredIcon, size: "20px"},
@@ -55,18 +47,6 @@ const SideBar = () => {
     {name: "Spam", Icon: SpamIcon},
     {name: "Trash", Icon: TrashIcon, size: "14px"},
   ]
-  async function syncEmailLabels() {
-    const res = await fetch("/api/gmail/labels")
-    const data = await res.json() as LabelInfo[]
-    const newLabelsInfo: Record<string, LabelInfo> = {}
-    data.forEach(labelInfo => {
-      newLabelsInfo[labelInfo.id] = labelInfo
-    })
-    setLabelsInfo(newLabelsInfo)
-  }
-  useEffect(() => {
-    void syncEmailLabels()
-  }, [])
   return (
     <div className="
       w-[256px] min-w-[256px] flex flex-col flex-shrink-0
