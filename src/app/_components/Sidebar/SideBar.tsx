@@ -1,12 +1,11 @@
 import { RiPencilLine as ComposeIcon, RiSendPlane2Line as SentIcon } from "react-icons/ri";
 import { CgInbox as InboxIcon } from "react-icons/cg";
 import { IoMdStarOutline as StarredIcon } from "react-icons/io";
-import { FiClock as SnoozedIcon } from "react-icons/fi";
 import { FaRegFile as DraftIcon, FaRegTrashAlt as TrashIcon } from "react-icons/fa";
 import { MdKeyboardArrowDown as DropdownIcon, MdKeyboardArrowUp as CollapseIcon, MdLabelImportantOutline as ImportantIcon, MdOutlineScheduleSend as ScheduledIcon } from "react-icons/md";
 import { LuMails as MailsIcon } from "react-icons/lu";
 import { PiWarningOctagonFill as SpamIcon } from "react-icons/pi";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { LabelInfo } from "../HomePage";
 
 const ComposeButton = () => {
@@ -29,14 +28,13 @@ interface EmailCategory {
   Icon: React.ElementType,
   size?: number | string,
 }
-const SideBar = ({ labelsInfo } : { labelsInfo: Record<string, LabelInfo>}) => {
+const SideBar = ({ labelsInfo } : { labelsInfo?: Record<string, LabelInfo>}) => {
   const [showMore, setShowMore] = useState<boolean>(false)
   const [selectedCategory, setSelectedCategory] = useState<string>("Inbox")
   
   const emailCategories: EmailCategory[] = [
     {name: "Inbox", Icon: InboxIcon},
     {name: "Starred", Icon: StarredIcon, size: "20px"},
-    {name: "Snoozed", Icon: SnoozedIcon},
     {name: "Sent", Icon: SentIcon},
     {name: "Drafts", Icon: DraftIcon},
   ]
@@ -83,7 +81,7 @@ const SideBar = ({ labelsInfo } : { labelsInfo: Record<string, LabelInfo>}) => {
               </div>
               <span className="text-[14px]"
                 style={{
-                  fontWeight: selected ? 500 : undefined
+                  fontWeight: (selected || hasUnread) ? 500 : undefined
                 }}
               >
                 {name}
@@ -146,7 +144,7 @@ const SideBar = ({ labelsInfo } : { labelsInfo: Record<string, LabelInfo>}) => {
               </div>
               <span className="text-[14px]"
                 style={{
-                  fontWeight: selected ? 500 : undefined
+                  fontWeight: (selected || hasUnread) ? 500 : undefined
                 }}
               >
                 {name}

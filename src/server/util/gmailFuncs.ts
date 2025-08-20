@@ -14,7 +14,6 @@ export async function syncGmailLabels(userId: string) {
   const labels: string[] = [
     "INBOX",
     "STARRED",
-    "SNOOZED",
     "SENT",
     "DRAFT",
     "IMPORTANT",
