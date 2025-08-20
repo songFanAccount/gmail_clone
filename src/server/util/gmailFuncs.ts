@@ -22,11 +22,43 @@ function parseGmailMessage(raw: GMsg): GmailMessage {
 
 export async function syncUserGmail(userId: string, labelId: string, pageToken?: string) {
   const accessToken = await getAccessTokenFromRefresh(userId);
+
+  if (labelId === "DRAFT") {
+    const listUrl = new URL("https://gmail.googleapis.com/gmail/v1/users/me/drafts")
+    listUrl.searchParams.set("maxResults", "50")
+    if (pageToken) listUrl.searchParams.set("pageToken", pageToken)
+    const listRes = await fetch(listUrl, {
+      headers: { Authorization: `Bearer ${accessToken}` }
+    })
+    if (!listRes.ok) throw new Error("Fetching drafts failed")
+    const { drafts = [], nextPageToken } = await listRes.json() as {
+      drafts?: { id: string; message: { id: string; threadId: string } }[];
+      nextPageToken?: string;
+    };
+    const fetches = drafts.map(async (draft) => {
+      const url = new URL(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${draft.message.id}`);
+      url.searchParams.set("format", "metadata");
+      url.searchParams.append("metadataHeaders", "From");
+      url.searchParams.append("metadataHeaders", "Subject");
+      url.searchParams.append("metadataHeaders", "Date");
+  
+      const r = await fetch(url.toString(), { headers: { Authorization: `Bearer ${accessToken}` } });
+      if (!r.ok) return null;
+      const msg = await r.json() as GMsg;
+      const parsed = parseGmailMessage(msg);
+      parsed.threadId = msg.threadId ?? draft.message.threadId;
+      return parsed;
+    });
+  
+    const messages = (await Promise.all(fetches)).filter(Boolean) as GmailMessage[];
+    return { messages, nextPageToken };
+  }
+
   const labelPrefix = labelId === "STARRED" || labelId === "IMPORTANT" ? "is" : "in"
   const listUrl = new URL("https://gmail.googleapis.com/gmail/v1/users/me/threads");
-  listUrl.searchParams.set("q", `category:primary ${labelPrefix}:${labelId}`); // Primary tab view
+  listUrl.searchParams.set("q", `${labelId === "SPAM" || labelId === "TRASH" || labelId === "DRAFT" ? "" : "category:primary "}${labelPrefix}:${labelId}`); // Primary tab view
   listUrl.searchParams.set("maxResults", "50");
-  listUrl.searchParams.set("orderBy", "recent");
+  listUrl.searchParams.set("includeSpamTrash", "true")
   if (pageToken) listUrl.searchParams.set("pageToken", pageToken);
 
   const listRes = await fetch(listUrl.toString(), {
@@ -86,7 +118,8 @@ export async function syncGmailLabels(userId: string) {
   ]
   const requests = labels.map(async label => {
     try {
-      const res = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/labels/${label}`, {
+      const url = new URL(`https://gmail.googleapis.com/gmail/v1/users/me/labels/${label}`);
+      const res = await fetch(url, {
         headers: {Authorization: `Bearer ${access_token}`}
       })
       if (!res.ok) throw new Error(`${label} not available`)

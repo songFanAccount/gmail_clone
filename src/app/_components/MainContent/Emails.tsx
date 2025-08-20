@@ -32,13 +32,15 @@ const EmailListElement = ({ message, selected, starred, onCheck, onStar } : { me
   const CheckboxIcon = selected ? CheckedIcon : UncheckedIcon
   const {from, subject, date, snippet, labels} = cleanGmailMessage(message)
   const unread = labels.includes('UNREAD')
-  const formattedDate = date.toDateString() === (new Date()).toDateString()
+  const now = new Date()
+  const formattedDate = date.toDateString() === now.toDateString()
   ?
     date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit", hour12: true }).toUpperCase()
   :
     date.toLocaleDateString("en-US", {
-      month: "short",
+      month: date.getFullYear() === now.getFullYear() ? "short" : "numeric",
       day: "numeric",
+      year: date.getFullYear() === now.getFullYear() ? undefined : "2-digit"
     })
   interface ThreadButtonInfo {
     Icon: React.ElementType,
@@ -86,10 +88,10 @@ const EmailListElement = ({ message, selected, starred, onCheck, onStar } : { me
           <StarIcon className="w-5 h-5 flex-shrink-0"/>
         </div>
         <div className="flex flex-row justify-start min-w-[200px] w-[200px] max-w-[200px] pr-8">
-          <span className="truncate">{from}</span>
+          <span className="truncate" style={{fontWeight: unread ? 600 : undefined}}>{from}</span>
         </div>
-        <span className="overflow-hidden whitespace-nowrap flex-shrink-1 pr-2">{subject}</span>
-        <span className="truncate text-gray-500 flex-shrink-50">- {he.decode(snippet)}</span>
+        <span className="overflow-hidden whitespace-nowrap flex-shrink-1 pr-2" style={{fontWeight: unread ? 600 : undefined}}>{subject}</span>
+        {snippet.trim() !== "" && <span className="truncate text-gray-500 flex-shrink-50">- {he.decode(snippet)}</span>}
         {
           isHovered
           ?
@@ -119,7 +121,9 @@ const EmailListElement = ({ message, selected, starred, onCheck, onStar } : { me
               }
             </div>
           :
-            <span className="flex justify-end whitespace-nowrap ml-auto pl-10 mr-4 w-[80px] flex-shrink-0 text-gray-600 text-[12px]">{formattedDate}</span>
+            <span className="flex justify-end whitespace-nowrap ml-auto pl-10 mr-4 w-[80px] flex-shrink-0 text-gray-600 text-[12px]"
+              style={{fontWeight: unread ? 600 : undefined, color: unread ? "black" : undefined}}
+            >{formattedDate}</span>
         }
       </div>
     </button>
@@ -130,9 +134,10 @@ function cleanGmailMessage(message: GmailMessage): GmailThreadDisplay {
   const regex = /^(.*?)(?:\s*<(.+)>)?$/
   const match = regex.exec(from)
   const fromName = match?.[1]?.replace(/^"|"$/g, "").trim();
+  const subjectCleaned = subject.trim() === "" ? "(no subject)" : subject.trim()
   return {
     from: fromName ?? "",
-    subject,
+    subject: subjectCleaned,
     snippet,
     labels,
     date: new Date(date)
@@ -147,6 +152,7 @@ interface EmailsProps {
 }
 const Emails = ({ threadsMetadata, selectedIndices, onCheckIndex, starredIndices, onStarIndex } : EmailsProps) => {
   const messages = threadsMetadata?.messages
+  console.log(messages)
   return (
     <div className="w-full h-full max-h-full flex-1 flex flex-col overflow-y-auto pr-1">
       {

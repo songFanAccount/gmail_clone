@@ -56,15 +56,16 @@ const MainContent = ({ selectedLabelInfo } : MainContentProps) => {
     } else newIndices.add(i)
     setStarredIndices(newIndices)
   }
-  async function syncInitEmails(labelId: string) {
+  async function syncEmails(labelId: string) {
     if (!session?.user) return
+    if (labelId === "Drafts") labelId = "Draft"
     const res = await fetch(`/api/gmail/sync?labelId=${labelId.toUpperCase()}`)
     const data = await res.json() as ThreadsMetadata
     setThreadsMetadata(data)
   }
   useEffect(() => {
     if (labelId) {
-      void syncInitEmails(labelId)
+      void syncEmails(labelId)
     }
   }, [labelId])
   return (

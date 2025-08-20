@@ -35,9 +35,11 @@ const HomePage = () => {
     const data = (await res.json()) as LabelInfo[]
     const newLabelsInfo: Record<string, LabelInfo> = {}
     data.forEach(labelInfo => {
-      const key = (labelInfo.id[0]?.toUpperCase() ?? "") + labelInfo.id.slice(1).toLowerCase()
+      let key = (labelInfo.id[0]?.toUpperCase() ?? "") + labelInfo.id.slice(1).toLowerCase()
+      if (key === "Draft") key = "Drafts"
       newLabelsInfo[key] = labelInfo
     })
+    console.log(newLabelsInfo)
     setLabelsInfo(newLabelsInfo)
   }
   useEffect(() => {

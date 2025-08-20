@@ -28,27 +28,35 @@ const ActionsHeader = ({ selectedLabelInfo, selectAll, selectSome, onCheck } : A
       <div className="flex flex-row items-center">
         <CheckboxIcon className="w-5 h-5 cursor-pointer" onClick={onCheck}/>
         <DropdownIcon className="w-6 h-6 cursor-pointer"/>
-        <button className="cursor-pointer ml-5"
+        <button className="cursor-pointer ml-2 w-8 h-8 flex justify-center items-center rounded-full hover:bg-gray-200"
           onClick={syncEmails}
         >
           <RefreshIcon className="w-5 h-5"/>
         </button>
-        <MoreIcon className="w-5 h-5 ml-5 cursor-pointer"/>
+        <button className="w-8 h-8 ml-2 flex justify-center items-center hover:bg-gray-200 rounded-full">
+          <MoreIcon className="w-5 h-5 cursor-pointer flex-shrink-0"/>
+        </button>
       </div>
-      <div className="flex flex-row items-center gap-4 mr-5">
-        {totalNumThreads && <span className="text-[12px] tracking-wide">1-50 of {totalNumThreads.toLocaleString()}</span>}
-        <LeftArrowIcon className="w-5 h-5 cursor-pointer"
+      <div className="flex flex-row items-center gap-1 mr-5">
+        {totalNumThreads && <span className="text-[12px] tracking-wide mr-2">1-50 of {totalNumThreads.toLocaleString()}</span>}
+        <button className="w-8 h-8 flex justify-center items-center rounded-full cursor-pointer hover:bg-[var(--hover-color)]"
           style={{
             color: canGoBackPage ? undefined : "#aeb0af",
-            cursor: canGoBackPage ? "pointer" : "default"
-          }}
-        />
-        <RightArrowIcon className="w-5 h-5 cursor-pointer relative"
+            cursor: canGoBackPage ? "pointer" : "default",
+            '--hover-color': canGoBackPage ? "#e5e7eb" : undefined
+          } as React.CSSProperties}
+        >
+          <LeftArrowIcon className="w-5 h-5"/>
+        </button>
+        <button className="w-8 h-8 flex justify-center items-center rounded-full cursor-pointer hover:bg-[var(--hover-color)]"
           style={{
             color: canGoForwardPage ? undefined : "#aeb0af",
-            cursor: canGoForwardPage ? "pointer" : "default"
-          }}
-        />
+            cursor: canGoForwardPage ? "pointer" : "default",
+            '--hover-color': canGoForwardPage ? "#e5e7eb" : undefined
+          } as React.CSSProperties}
+        >
+          <RightArrowIcon className="w-5 h-5 relative"/>
+        </button>
       </div>
     </div>
   )

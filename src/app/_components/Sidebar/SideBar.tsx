@@ -59,7 +59,7 @@ const SideBar = ({ labelsInfo, selectedCategory, setSelectedCategory } : SideBar
           const name = c as string
           const selected = c === selectedCategory
           const labelInfo = labelsInfo?.[name]
-          const numUnreadThreads = labelInfo?.threadsUnread
+          const numUnreadThreads = c === EmailCategories.DRAFTS ? labelInfo?.threadsTotal : labelInfo?.threadsUnread
           const hasUnread = numUnreadThreads !== undefined && numUnreadThreads > 0
           return (
             <button key={index} className="
@@ -123,7 +123,7 @@ const SideBar = ({ labelsInfo, selectedCategory, setSelectedCategory } : SideBar
           const {category: c, Icon, size} = category
           const name = c as string
           const selected = c === selectedCategory
-          const numUnreadThreads = labelsInfo?.[name.toUpperCase()]?.threadsUnread
+          const numUnreadThreads = labelsInfo?.[name]?.threadsUnread
           const hasUnread = numUnreadThreads !== undefined && numUnreadThreads > 0
           return (
             <button key={index} className="
