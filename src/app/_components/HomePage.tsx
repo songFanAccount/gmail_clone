@@ -46,9 +46,9 @@ const HomePage = () => {
     }
   }, [session?.user])
   return (
-    <div className="w-screen h-screen bg-[#f8fafd] flex flex-col">
+    <div className="w-screen h-screen bg-[#f8fafd] flex flex-col overflow-hidden">
       <Header/>
-      <div className="h-full w-full flex flex-row">
+      <div className="h-full w-full flex flex-row overflow-hidden">
         <SideBar labelsInfo={labelsInfo} selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory}/>
         <MainContent selectedLabelInfo={labelsInfo?.[selectedCategory as string]}/>
       </div>

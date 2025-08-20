@@ -11,14 +11,14 @@ const ActionsHeader = ({ selectedLabelInfo } : ActionsHeaderProps) => {
   const canGoForwardPage = true
   const totalNumThreads = selectedLabelInfo?.threadsTotal
   async function syncEmails() {
-    const res = await fetch("/api/gmail/sync")
-    const data = await res.json() as JSON
-    console.log(data)
+    // const res = await fetch("/api/gmail/sync")
+    // const data = await res.json() as JSON
+    // console.log(data)
   }
   return (
     <div className="
       h-12 w-full flex flex-row items-center justify-between
-      pl-3 text-gray-600
+      pl-4 text-gray-600
     ">
       <div className="flex flex-row items-center">
         <CheckboxIcon className="w-5 h-5 cursor-pointer"/>
