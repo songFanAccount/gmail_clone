@@ -14,7 +14,7 @@ const Tabs = () => {
   ]
   return (
     <div className="
-      h-[56px] w-full flex flex-row gap-3 items-center text-gray-800 ml-1 border-b-[1px] border-gray-200
+      h-[56px] w-full flex flex-row gap-3 items-center text-gray-800 ml-1 border-b-[1px] border-gray-200 z-1
     ">
       {
         tabs.map((tab, index) => {

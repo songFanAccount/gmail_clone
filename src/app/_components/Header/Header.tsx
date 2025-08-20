@@ -45,7 +45,7 @@ const Header = () => {
             <ProfileButton/>
           :
             <button className="
-              border-[1px] rounded-[10px] px-2 py-1 text-gray-700
+              border-[1px] rounded-[10px] px-2 py-1 text-gray-700 text-[14px]
               cursor-pointer hover:bg-black hover:text-white
             "
               onClick={() => signIn("google")}
