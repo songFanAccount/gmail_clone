@@ -1,8 +1,8 @@
 import { getAccessTokenFromRefresh } from "./googleTokens";
 
-export async function syncUserGmail(userId: string) {
+export async function syncUserGmail(userId: string, labelId: string) {
   const accessToken = await getAccessTokenFromRefresh(userId)
-  const res = await fetch("https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=50", {
+  const res = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages?labelIds=${labelId}&maxResults=50`, {
     headers: { Authorization: `Bearer ${accessToken}` }
   })
   const json = await res.json() as JSON
@@ -19,9 +19,9 @@ export async function syncGmailLabels(userId: string) {
     "IMPORTANT",
     "SCHEDULED",
     "ALL_MAIL",
-    "CATEGORY_PERSONAL",
     "SPAM",
-    "TRASH"
+    "TRASH",
+    "CATEGORY_PERSONAL",
   ]
   const requests = labels.map(async label => {
     try {

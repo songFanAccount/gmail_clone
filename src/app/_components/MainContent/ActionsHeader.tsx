@@ -1,10 +1,15 @@
 import { RiCheckboxBlankLine as CheckboxIcon, RiArrowDropDownFill as DropdownIcon } from "react-icons/ri";
 import { IoMdRefresh as RefreshIcon, IoMdMore as MoreIcon } from "react-icons/io";
 import { MdOutlineKeyboardArrowLeft as LeftArrowIcon, MdOutlineKeyboardArrowRight as RightArrowIcon  } from "react-icons/md";
+import type { LabelInfo } from "../HomePage";
 
-const ActionsHeader = () => {
+interface ActionsHeaderProps {
+  selectedLabelInfo?: LabelInfo
+}
+const ActionsHeader = ({ selectedLabelInfo } : ActionsHeaderProps) => {
   const canGoBackPage = false
   const canGoForwardPage = true
+  const totalNumThreads = selectedLabelInfo?.threadsTotal
   async function syncEmails() {
     const res = await fetch("/api/gmail/sync")
     const data = await res.json() as JSON
@@ -26,7 +31,7 @@ const ActionsHeader = () => {
         <MoreIcon className="w-5 h-5 ml-5 cursor-pointer"/>
       </div>
       <div className="flex flex-row items-center gap-4 mr-5">
-        <span className="text-[12px] tracking-wide">1-50 of 3,120</span>
+        {totalNumThreads && <span className="text-[12px] tracking-wide">1-50 of {totalNumThreads.toLocaleString()}</span>}
         <LeftArrowIcon className="w-5 h-5 cursor-pointer"
           style={{
             color: canGoBackPage ? undefined : "#aeb0af",

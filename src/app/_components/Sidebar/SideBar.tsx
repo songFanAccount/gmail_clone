@@ -3,10 +3,9 @@ import { CgInbox as InboxIcon } from "react-icons/cg";
 import { IoMdStarOutline as StarredIcon } from "react-icons/io";
 import { FaRegFile as DraftIcon, FaRegTrashAlt as TrashIcon } from "react-icons/fa";
 import { MdKeyboardArrowDown as DropdownIcon, MdKeyboardArrowUp as CollapseIcon, MdLabelImportantOutline as ImportantIcon, MdOutlineScheduleSend as ScheduledIcon } from "react-icons/md";
-import { LuMails as MailsIcon } from "react-icons/lu";
 import { PiWarningOctagonFill as SpamIcon } from "react-icons/pi";
 import { useState } from "react";
-import type { LabelInfo } from "../HomePage";
+import { EmailCategories, type LabelInfo } from "../HomePage";
 
 const ComposeButton = () => {
   return (
@@ -24,26 +23,28 @@ const ComposeButton = () => {
   )
 }
 interface EmailCategory {
-  name: string,
+  category: EmailCategories,
   Icon: React.ElementType,
   size?: number | string,
 }
-const SideBar = ({ labelsInfo } : { labelsInfo?: Record<string, LabelInfo>}) => {
-  const [showMore, setShowMore] = useState<boolean>(false)
-  const [selectedCategory, setSelectedCategory] = useState<string>("Inbox")
-  
+interface SideBarProps {
+  labelsInfo?: Record<string, LabelInfo>,
+  selectedCategory: EmailCategories,
+  setSelectedCategory: (newCategory: EmailCategories) => void
+}
+const SideBar = ({ labelsInfo, selectedCategory, setSelectedCategory } : SideBarProps) => {
+  const [showMore, setShowMore] = useState<boolean>(false)  
   const emailCategories: EmailCategory[] = [
-    {name: "Inbox", Icon: InboxIcon},
-    {name: "Starred", Icon: StarredIcon, size: "20px"},
-    {name: "Sent", Icon: SentIcon},
-    {name: "Drafts", Icon: DraftIcon},
+    {category: EmailCategories.INBOX, Icon: InboxIcon},
+    {category: EmailCategories.STARRED, Icon: StarredIcon, size: "20px"},
+    {category: EmailCategories.SENT, Icon: SentIcon},
+    {category: EmailCategories.DRAFTS, Icon: DraftIcon},
   ]
   const moreEmailCategories: EmailCategory[] = [
-    {name: "Important", Icon: ImportantIcon, size: "18px"},
-    {name: "Scheduled", Icon: ScheduledIcon},
-    {name: "All Mail", Icon: MailsIcon},
-    {name: "Spam", Icon: SpamIcon},
-    {name: "Trash", Icon: TrashIcon, size: "14px"},
+    {category: EmailCategories.IMPORTANT, Icon: ImportantIcon, size: "18px"},
+    {category: EmailCategories.SCHEDULED, Icon: ScheduledIcon},
+    {category: EmailCategories.SPAM, Icon: SpamIcon},
+    {category: EmailCategories.TRASH, Icon: TrashIcon, size: "14px"},
   ]
   return (
     <div className="
@@ -54,9 +55,11 @@ const SideBar = ({ labelsInfo } : { labelsInfo?: Record<string, LabelInfo>}) => 
         flex flex-col w-[240px] text-gray-800
       ">
         {emailCategories.map((category, index) => {
-          const {name, Icon, size} = category
-          const selected = name === selectedCategory
-          const numUnreadThreads = labelsInfo?.[name.toUpperCase()]?.threadsUnread
+          const {category: c, Icon, size} = category
+          const name = c as string
+          const selected = c === selectedCategory
+          const labelInfo = labelsInfo?.[name]
+          const numUnreadThreads = labelInfo?.threadsUnread
           const hasUnread = numUnreadThreads !== undefined && numUnreadThreads > 0
           return (
             <button key={index} className="
@@ -69,7 +72,7 @@ const SideBar = ({ labelsInfo } : { labelsInfo?: Record<string, LabelInfo>}) => 
                 '--hover-color': selected ? "#d3e3fd" : "#ebedf0",
                 color: selected ? "black" : undefined
               } as React.CSSProperties}
-              onClick={() => setSelectedCategory(name)}
+              onClick={() => setSelectedCategory(name as EmailCategories)}
             >
               <div className="w-[56px] flex justify-center items-center">
                 <Icon
@@ -117,8 +120,9 @@ const SideBar = ({ labelsInfo } : { labelsInfo?: Record<string, LabelInfo>}) => 
           </span>
         </button>
         {showMore && moreEmailCategories.map((category, index) => {
-          const {name, Icon, size} = category
-          const selected = name === selectedCategory
+          const {category: c, Icon, size} = category
+          const name = c as string
+          const selected = c === selectedCategory
           const numUnreadThreads = labelsInfo?.[name.toUpperCase()]?.threadsUnread
           const hasUnread = numUnreadThreads !== undefined && numUnreadThreads > 0
           return (
@@ -132,7 +136,7 @@ const SideBar = ({ labelsInfo } : { labelsInfo?: Record<string, LabelInfo>}) => 
                 '--hover-color': selected ? "#d3e3fd" : "#ebedf0",
                 color: selected ? "black" : undefined
               } as React.CSSProperties}
-              onClick={() => setSelectedCategory(name)}
+              onClick={() => setSelectedCategory(name as EmailCategories)}
             >
               <div className="w-[56px] flex justify-center items-center">
                 <Icon
