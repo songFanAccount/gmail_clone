@@ -152,7 +152,6 @@ interface EmailsProps {
 }
 const Emails = ({ threadsMetadata, selectedIndices, onCheckIndex, starredIndices, onStarIndex } : EmailsProps) => {
   const messages = threadsMetadata?.messages
-  console.log(messages)
   return (
     <div className="w-full h-full max-h-full flex-1 flex flex-col overflow-y-auto pr-1">
       {

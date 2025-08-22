@@ -1,9 +1,9 @@
 import { useSession } from "next-auth/react"
-import type { LabelInfo } from "../HomePage"
 import ActionsHeader from "./ActionsHeader"
 import Emails from "./Emails"
 import Tabs from "./Tabs"
 import { useEffect, useState } from "react"
+import type { LabelMetadata } from "~/types/gmails"
 
 export interface GmailMessage {
   id: string;
@@ -21,10 +21,10 @@ export interface ThreadsMetadata {
   resultSizeEstimate: number
 }
 interface MainContentProps {
-  selectedLabelInfo?: LabelInfo
+  selectedLabelInfo?: LabelMetadata
 }
 const MainContent = ({ selectedLabelInfo } : MainContentProps) => {
-  const labelId = selectedLabelInfo?.id
+  const labelId = selectedLabelInfo?.name
   const { data: session } = useSession()
   const [threadsMetadata, setThreadsMetadata] = useState<ThreadsMetadata | undefined>(undefined)
   const [selectAll, setSelectAll] = useState<boolean>(false)

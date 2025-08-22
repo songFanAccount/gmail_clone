@@ -2,10 +2,10 @@ import { RiCheckboxBlankLine as UncheckedIcon, RiCheckboxLine as CheckedIcon, Ri
 
 import { IoMdRefresh as RefreshIcon, IoMdMore as MoreIcon } from "react-icons/io";
 import { MdOutlineKeyboardArrowLeft as LeftArrowIcon, MdOutlineKeyboardArrowRight as RightArrowIcon  } from "react-icons/md";
-import type { LabelInfo } from "../HomePage";
+import type { LabelMetadata } from "~/types/gmails";
 
 interface ActionsHeaderProps {
-  selectedLabelInfo?: LabelInfo,
+  selectedLabelInfo?: LabelMetadata,
   selectAll: boolean,
   selectSome: boolean,
   onCheck: () => void

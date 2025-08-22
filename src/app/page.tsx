@@ -1,11 +1,6 @@
 
-import { HydrateClient } from "~/trpc/server";
-import HomePage from "./_components/HomePage";
+import { redirect } from "next/navigation";
 
 export default async function Home() {
-  return (
-    <HydrateClient>
-      <HomePage/>
-    </HydrateClient>
-  );
+  redirect("/mail/inbox")
 }

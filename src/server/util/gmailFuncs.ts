@@ -101,33 +101,3 @@ export async function syncUserGmail(userId: string, labelId: string, pageToken?:
     nextPageToken
   };
 }
-
-export async function syncGmailLabels(userId: string) {
-  const access_token = await getAccessTokenFromRefresh(userId)
-  const labels: string[] = [
-    "INBOX",
-    "STARRED",
-    "SENT",
-    "DRAFT",
-    "IMPORTANT",
-    "SCHEDULED",
-    "ALL_MAIL",
-    "SPAM",
-    "TRASH",
-    "CATEGORY_PERSONAL",
-  ]
-  const requests = labels.map(async label => {
-    try {
-      const url = new URL(`https://gmail.googleapis.com/gmail/v1/users/me/labels/${label}`);
-      const res = await fetch(url, {
-        headers: {Authorization: `Bearer ${access_token}`}
-      })
-      if (!res.ok) throw new Error(`${label} not available`)
-        return await res.json() as JSON
-    } catch (_) {
-      return null
-    }
-  })
-  const results = (await Promise.all(requests)).filter(Boolean) as JSON[]
-  return results
-}
